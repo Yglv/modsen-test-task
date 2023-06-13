@@ -3,7 +3,7 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 @Entity()
 export class Meetup {
   @PrimaryGeneratedColumn({
-    type: 'int',
+    type: 'int', 
     name: 'meetup_id',
   })
   id: number;
@@ -29,11 +29,10 @@ export class Meetup {
   })
   keywords: string;
 
-  
   @Column({
     name: 'meetup_time',
-    nullable: true,
-    default: '', 
+    nullable: false,
+    default: '',
   })
   time: Date;
 
