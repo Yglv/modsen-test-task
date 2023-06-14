@@ -3,6 +3,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Meetup } from 'src/typeorm/meetup.entity';
 import { MeetupDto } from 'src/meetups/dtos/meetups.dto';
+import { throws } from 'assert';
 
 @Injectable()
 export class MeetupsService {
@@ -16,7 +17,7 @@ export class MeetupsService {
     return this.meetupRepository.save(newMeetup);
   }
 
-  findMeetups() {
+  findAllMeetups() {
     return this.meetupRepository.find();
   }
 
@@ -24,11 +25,11 @@ export class MeetupsService {
     return this.meetupRepository.findOneBy({ id: id });
   }
 
-  changeMeetup(id: number) {
-    
+  changeMeetup(id: number, meetupDto: MeetupDto) {
+    return this.meetupRepository.update(id, meetupDto)
   }
 
   deleteMeetup(id: number) {
-
+    return this.meetupRepository.delete(id)
   }
 }
