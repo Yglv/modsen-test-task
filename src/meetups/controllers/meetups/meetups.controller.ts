@@ -19,20 +19,27 @@ export class MeetupsController {
 
   @Post()
   create(@Body() createMeetupDto: MeetupDto) {
-    return this.meetupsService.createMeetup()
+    return this.meetupsService.createMeetup(createMeetupDto)
   }
 
   @Get()
-  findAll() {}
+  findAll() {
+    return this.meetupsService.findAllMeetups()
+  }
 
   @Get(':id')
-  findOne(@Param(':id') id: number) {}
+  findOne(@Param(':id') id: number) {
+    return this.meetupsService.findMeetupById(id)
+  }
 
   @Patch(':id')
   update(@Param(':id') id: number, @Body() updateMeetupDto: MeetupDto) {
+    return this.meetupsService.changeMeetup(id, updateMeetupDto)
   }
 
   @Delete(':id')
-  remove(@Param('id') id: number) {}
+  remove(@Param('id') id: number) {
+    return this.meetupsService.deleteMeetup(id)
+  }
 }
 
