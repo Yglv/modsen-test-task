@@ -3,7 +3,7 @@ import { MeetupsModule } from './meetups/meetups.module';
 import { UsersModule } from './users/users.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { entities } from './typeorm/index'
+import entities from './typeorm/index'
 
 @Module({
   imports: [
