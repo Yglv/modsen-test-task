@@ -1,13 +1,17 @@
+/* eslint-disable prettier/prettier */
+import { ApiProperty } from '@nestjs/swagger';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Meetup {
+  @ApiProperty()
   @PrimaryGeneratedColumn({
-    type: 'bigint', 
+    type: 'bigint',
     name: 'meetup_id',
   })
   id: number;
 
+  @ApiProperty()
   @Column({
     name: 'meetup_topic',
     type: 'character varying',
@@ -16,6 +20,7 @@ export class Meetup {
   })
   topic: string;
 
+  @ApiProperty()
   @Column({
     name: 'meetup_description',
     type: 'character varying',
@@ -24,6 +29,7 @@ export class Meetup {
   })
   description: string;
 
+  @ApiProperty()
   @Column({
     name: 'meetup_keywords',
     type: 'character varying',
@@ -32,13 +38,15 @@ export class Meetup {
   })
   keywords: string;
 
+  @ApiProperty()
   @Column({
     name: 'meetup_time',
-    type: 'date',
+    type: "timestamp with time zone",
     nullable: false,
   })
   time: Date;
 
+  @ApiProperty()
   @Column({
     name: 'meetup_place',
     type: 'character varying',
