@@ -26,10 +26,10 @@ export class MeetupsService {
   }
 
   changeMeetup(id: number, meetupDto: MeetupDto) {
-    return this.meetupRepository.update(id, meetupDto)
+    return this.meetupRepository.update(id, meetupDto);
   }
 
   deleteMeetup(id: number) {
-    return this.meetupRepository.delete(id)
+    return this.meetupRepository.delete(id);
   }
 }
