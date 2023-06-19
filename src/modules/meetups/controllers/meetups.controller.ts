@@ -86,7 +86,7 @@ export class MeetupsController {
   @Patch(':id')
   @HttpCode(200)
   @ApiResponse({ status: 200, description: 'update a meetup', type: Meetup })
-  @ApiResponse({ status: 400, description: 'not found' })
+  @ApiResponse({ status: 400, description: 'Not found' })
   @ApiBody({
     type: [MeetupDto],
   })
