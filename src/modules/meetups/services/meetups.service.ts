@@ -1,10 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import {
-  DeleteResult,
-  Repository,
-  SelectQueryBuilder,
-  UpdateResult,
-} from 'typeorm';
+import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Meetup } from 'src/modules/meetups/entities/meetup.entity';
 import { MeetupDto } from 'src/modules/meetups/dtos/meetups.dto';
