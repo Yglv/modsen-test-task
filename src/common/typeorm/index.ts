@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
-import { User } from 'src/modules/users/entities/user.entity';
-import { Meetup } from '../../modules/meetups/entities/meetup.entity';
+import { User } from 'src/modules/users/users.entity';
+import { Meetup } from 'src/modules/meetups/meetups.entity';
 
 const entities = [Meetup, User];
 
