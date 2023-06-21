@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataFactory, Seeder } from 'nestjs-seeder';
-import { Meetup } from '../entities/meetup.entity';
+import { Meetup } from '../meetups.entity';
 import { Repository } from 'typeorm';
 
 export class MeetupSeeder implements Seeder {

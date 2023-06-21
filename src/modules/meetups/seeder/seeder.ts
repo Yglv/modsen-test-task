@@ -3,7 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { seeder } from 'nestjs-seeder';
 import entities from '../../../common/typeorm/index';
-import { Meetup } from '../entities/meetup.entity';
+import { Meetup } from '../meetups.entity';
 import { MeetupSeeder } from './meetups.seeder';
 import * as Joi from 'joi';
 
