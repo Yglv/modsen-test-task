@@ -12,12 +12,14 @@ import {
   Logger,
   HttpCode,
   Req,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { MeetupDto } from 'src/modules/meetups/dtos/meetups.dto';
-import { MeetupsService } from 'src/modules/meetups/services/meetups.service';
-import { Meetup } from 'src/modules/meetups/entities/meetup.entity';
+import { MeetupDto } from 'src/modules/meetups/dto/meetups.dto';
+import { MeetupsService } from 'src/modules/meetups/meetups.service';
+import { Meetup } from 'src/modules/meetups/meetups.entity';
 import { Request } from 'express';
+import { AccessTokenGuard } from 'src/common/guards/accessToken.guard';
 
 @ApiTags('meetups')
 @Controller('meetups')
@@ -28,6 +30,7 @@ export class MeetupsController {
   }
 
   @Post()
+  //@UseGuards(AccessTokenGuard)
   @HttpCode(200)
   @ApiResponse({ status: 200, description: 'create a meetup', type: Meetup })
   @ApiBody({
@@ -40,6 +43,7 @@ export class MeetupsController {
   }
 
   @Get(':id')
+  //@UseGuards(AccessTokenGuard)
   @HttpCode(200)
   @ApiResponse({ status: 200, description: 'get a meetup by id', type: Meetup })
   @ApiResponse({ status: 400, description: 'not found' })
@@ -53,6 +57,7 @@ export class MeetupsController {
   }
 
   @Get()
+  //@UseGuards(AccessTokenGuard)
   @HttpCode(200)
   @ApiResponse({ status: 200, description: 'get all meetups', type: [Meetup] })
   @ApiResponse({ status: 400, description: 'not found' })
@@ -60,6 +65,7 @@ export class MeetupsController {
     const sortParam = request.query.sort;
     const sortTypeParam = request.query.type;
     const searchParam = request.query.search;
+    const filterParam = request.query.date;
     const page: number = parseInt(request.query.page as string) || 1;
   
     if (searchParam) {
@@ -70,6 +76,9 @@ export class MeetupsController {
         (sortParam as string).toUpperCase(),
         sortTypeParam,
       );
+    }
+    if (filterParam) {
+      return await this.meetupsService.findMeetupsByFilter(filterParam);
     }
     if (page) {
       return await this.meetupsService.findMeetupsByPage(page);
@@ -84,6 +93,7 @@ export class MeetupsController {
   }
 
   @Patch(':id')
+  @UseGuards(AccessTokenGuard)
   @HttpCode(200)
   @ApiResponse({ status: 200, description: 'update a meetup', type: Meetup })
   @ApiResponse({ status: 400, description: 'Not found' })
@@ -103,6 +113,7 @@ export class MeetupsController {
   }
 
   @Delete(':id')
+  @UseGuards(AccessTokenGuard)
   @HttpCode(200)
   async remove(@Param('id', ParseIntPipe) id: number) {
     const meetup = await this.meetupsService.findMeetupById(id);
