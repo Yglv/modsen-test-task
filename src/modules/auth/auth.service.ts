@@ -1,8 +1,14 @@
-import { Injectable, BadRequestException, Logger } from '@nestjs/common';
-import { UsersService } from '../users/services/users.service';
+import {
+  Injectable,
+  BadRequestException,
+  Logger,
+  HttpStatus,
+  HttpException,
+} from '@nestjs/common';
+import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { UserDto } from '../users/dtos/users.dto';
+import { UserDto } from '../users/dto/users.dto';
 import * as argon2 from 'argon2';
 import { AuthDto } from './dto/auth.dto';
 
@@ -106,5 +112,22 @@ export class AuthService {
       username: user.username,
       password: user.password,
     });
+  }
+
+  async refreshTokens(userId: number, refreshToken: string) {
+    const user = await this.usersService.findUserById(userId);
+    if (!user || !user.refreshToken) {
+      throw new HttpException('User does not exists', HttpStatus.FORBIDDEN);
+    }
+    const refreshTokenMatches = await argon2.verify(
+      user.refreshToken,
+      refreshToken,
+    );
+    if (!refreshTokenMatches) {
+      throw new HttpException('Tokens do not match', HttpStatus.FORBIDDEN);
+    }
+    const tokens = await this.getTokens(userId, user.username);
+    await this.updateRefreshToken(userId, tokens.refreshToken);
+    return tokens;
   }
 }
