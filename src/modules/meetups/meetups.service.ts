@@ -1,8 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Meetup } from 'src/modules/meetups/entities/meetup.entity';
-import { MeetupDto } from 'src/modules/meetups/dtos/meetups.dto';
+import { Meetup } from 'src/modules/meetups/meetups.entity';
+import { MeetupDto } from 'src/modules/meetups/dto/meetups.dto';
 
 @Injectable()
 export class MeetupsService {
@@ -66,6 +66,15 @@ export class MeetupsService {
       pageNum,
       last_page: Math.ceil(totalCountOfMeetups / perPage),
     };
+  }
+
+  async findMeetupsByFilter(filterParam) {
+    const builder = this.meetupRepository.createQueryBuilder('meetups');
+    let meetups = await builder.getMany();
+
+    meetups = meetups.filter((meetup) => (meetup.time = new Date(filterParam)));
+    this.logger.log(meetups);
+    return meetups;
   }
 
   async findMeetupById(id: number): Promise<Meetup> {
