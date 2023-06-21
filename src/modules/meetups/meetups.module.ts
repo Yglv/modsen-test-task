@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Meetup } from 'src/modules/meetups/entities/meetup.entity';
-import { MeetupsController } from './controllers/meetups/meetups.controller';
-import { MeetupsService } from './services/meetups/meetups.service';
+import { Meetup } from 'src/modules/meetups/meetups.entity';
+import { MeetupsController } from './meetups.controller';
+import { MeetupsService } from './meetups.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Meetup])],
