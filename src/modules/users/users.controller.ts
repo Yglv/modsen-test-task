@@ -11,9 +11,11 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
-import { UserDto } from '../dtos/users.dto';
-import { UsersService } from '../services/users.service';
+import { AccessTokenGuard } from 'src/common/guards/accessToken.guard';
+import { UserDto } from './dto/users.dto';
+import { UsersService } from './users.service';
 
 @Controller('users')
 export class UsersController {
@@ -23,6 +25,7 @@ export class UsersController {
   }
 
   @Post()
+  @UseGuards(AccessTokenGuard)
   @HttpCode(200)
   async create(@Body() createUserDto: UserDto) {
     const user = await this.usersService.createUser(createUserDto);
@@ -31,6 +34,7 @@ export class UsersController {
   }
 
   @Get()
+  @UseGuards(AccessTokenGuard)
   @HttpCode(200)
   async findAll() {
     const users = await this.usersService.findAllUsers();
@@ -42,6 +46,7 @@ export class UsersController {
   }
 
   @Get(':id')
+  @UseGuards(AccessTokenGuard)
   @HttpCode(200)
   async findById(@Param('id', ParseIntPipe) id: number) {
     const user = await this.usersService.findUserById(id);
@@ -53,6 +58,7 @@ export class UsersController {
   }
 
   @Get(':name')
+  @UseGuards(AccessTokenGuard)
   @HttpCode(200)
   async findByUsername(@Param('name') username: string) {
     const user = await this.usersService.findUserByUsername(username);
@@ -64,6 +70,7 @@ export class UsersController {
   }
 
   @Patch(':id')
+  @UseGuards(AccessTokenGuard)
   @HttpCode(200)
   async update(
     @Param('id', ParseIntPipe) id: number,
@@ -78,6 +85,7 @@ export class UsersController {
   }
 
   @Delete(':id')
+  @UseGuards(AccessTokenGuard)
   @HttpCode(200)
   async delete(@Param('id', ParseIntPipe) id: number) {
     const user = await this.usersService.findUserById(id);
