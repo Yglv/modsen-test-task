@@ -3,6 +3,7 @@ import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Meetup } from 'src/modules/meetups/meetups.entity';
 import { MeetupDto } from 'src/modules/meetups/dto/meetups.dto';
+import { IMeetupsByPage } from './interface/meetups.interface';
 
 @Injectable()
 export class MeetupsService {
@@ -54,7 +55,7 @@ export class MeetupsService {
     return meetups;
   }
 
-  async findMeetupsByPage(pageNum) {
+  async findMeetupsByPage(pageNum): Promise<IMeetupsByPage> {
     const builder = this.meetupRepository.createQueryBuilder('meetups');
     const perPage = 20;
     const totalCountOfMeetups = await builder.getCount();

@@ -20,8 +20,11 @@ import { MeetupsService } from 'src/modules/meetups/meetups.service';
 import { Meetup } from 'src/modules/meetups/meetups.entity';
 import { Request } from 'express';
 import { AccessTokenGuard } from 'src/common/guards/accessToken.guard';
+import { UpdateResult } from 'typeorm';
+import { IMeetupsByPage } from './interface/meetups.interface';
 
 @ApiTags('meetups')
+@UseGuards(AccessTokenGuard)
 @Controller('meetups')
 export class MeetupsController {
   logger: Logger;
@@ -30,24 +33,22 @@ export class MeetupsController {
   }
 
   @Post()
-  //@UseGuards(AccessTokenGuard)
   @HttpCode(200)
   @ApiResponse({ status: 200, description: 'create a meetup', type: Meetup })
   @ApiBody({
     type: [MeetupDto],
   })
-  create(@Body() createMeetupDto: MeetupDto) {
+  create(@Body() createMeetupDto: MeetupDto): Promise<Meetup> {
     const meetup = this.meetupsService.createMeetup(createMeetupDto);
     this.logger.log(meetup);
     return meetup;
   }
 
   @Get(':id')
-  //@UseGuards(AccessTokenGuard)
   @HttpCode(200)
   @ApiResponse({ status: 200, description: 'get a meetup by id', type: Meetup })
   @ApiResponse({ status: 400, description: 'not found' })
-  async findOne(@Param('id', ParseIntPipe) id: number) {
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<Meetup> {
     const meetup = await this.meetupsService.findMeetupById(id);
     this.logger.log(meetup);
     if (!meetup) {
@@ -57,17 +58,16 @@ export class MeetupsController {
   }
 
   @Get()
-  //@UseGuards(AccessTokenGuard)
   @HttpCode(200)
   @ApiResponse({ status: 200, description: 'get all meetups', type: [Meetup] })
   @ApiResponse({ status: 400, description: 'not found' })
-  async findAll(@Req() request: Request) {
+  async findAll(@Req() request: Request): Promise<IMeetupsByPage | Meetup[]> {
     const sortParam = request.query.sort;
     const sortTypeParam = request.query.type;
     const searchParam = request.query.search;
     const filterParam = request.query.date;
     const page: number = parseInt(request.query.page as string) || 1;
-  
+
     if (searchParam) {
       return await this.meetupsService.findMeetupsBySearch(searchParam);
     }
@@ -93,7 +93,6 @@ export class MeetupsController {
   }
 
   @Patch(':id')
-  @UseGuards(AccessTokenGuard)
   @HttpCode(200)
   @ApiResponse({ status: 200, description: 'update a meetup', type: Meetup })
   @ApiResponse({ status: 400, description: 'Not found' })
@@ -103,7 +102,7 @@ export class MeetupsController {
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateMeetupDto: MeetupDto,
-  ) {
+  ): Promise<UpdateResult> {
     const meetup = await this.meetupsService.findMeetupById(id);
     this.logger.log(meetup);
     if (!meetup) {
@@ -113,9 +112,8 @@ export class MeetupsController {
   }
 
   @Delete(':id')
-  @UseGuards(AccessTokenGuard)
   @HttpCode(200)
-  async remove(@Param('id', ParseIntPipe) id: number) {
+  async remove(@Param('id', ParseIntPipe) id: number): Promise<Meetup> {
     const meetup = await this.meetupsService.findMeetupById(id);
     if (!meetup) {
       throw new HttpException('Not found', HttpStatus.BAD_REQUEST);

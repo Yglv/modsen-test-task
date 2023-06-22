@@ -11,6 +11,8 @@ import { ConfigService } from '@nestjs/config';
 import { UserDto } from '../users/dto/users.dto';
 import * as argon2 from 'argon2';
 import { AuthDto } from './dto/auth.dto';
+import { IAuthInterface } from './interface/auth.interface';
+import { UpdateResult } from 'typeorm';
 
 @Injectable()
 export class AuthService {
@@ -23,7 +25,7 @@ export class AuthService {
     this.logger = new Logger();
   }
 
-  async signUp(createUserDto: UserDto) {
+  async signUp(createUserDto: UserDto): Promise<IAuthInterface> {
     this.logger.log(createUserDto);
     const userExists = await this.usersService.findUserByUsername(
       createUserDto.username,
@@ -41,7 +43,7 @@ export class AuthService {
     return tokens;
   }
 
-  async signIn(authDto: AuthDto) {
+  async signIn(authDto: AuthDto): Promise<IAuthInterface> {
     const user = await this.usersService.findUserByUsername(authDto.username);
     if (!user) {
       throw new BadRequestException('User does not exists');
@@ -58,7 +60,7 @@ export class AuthService {
     return tokens;
   }
 
-  async logout(userId: number) {
+  async logout(userId: number): Promise<UpdateResult> {
     const user = await this.usersService.findUserById(userId);
     if (!user) {
       throw new BadRequestException('User does not exists');
@@ -71,7 +73,7 @@ export class AuthService {
     });
   }
 
-  async getTokens(userId: number, username: string) {
+  async getTokens(userId: number, username: string): Promise<IAuthInterface> {
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(
         {
@@ -100,7 +102,10 @@ export class AuthService {
     };
   }
 
-  async updateRefreshToken(userId: number, refreshToken: string) {
+  async updateRefreshToken(
+    userId: number,
+    refreshToken: string,
+  ): Promise<void> {
     const hashedRefreshToken = await argon2.hash(refreshToken);
     const user = await this.usersService.findUserById(userId);
     if (!user) {
@@ -114,7 +119,10 @@ export class AuthService {
     });
   }
 
-  async refreshTokens(userId: number, refreshToken: string) {
+  async refreshTokens(
+    userId: number,
+    refreshToken: string,
+  ): Promise<IAuthInterface> {
     const user = await this.usersService.findUserById(userId);
     if (!user || !user.refreshToken) {
       throw new HttpException('User does not exists', HttpStatus.FORBIDDEN);

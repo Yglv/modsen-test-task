@@ -13,6 +13,7 @@ import { AuthDto } from './dto/auth.dto';
 import { Request } from 'express';
 import { AccessTokenGuard } from 'src/common/guards/accessToken.guard';
 import { RefreshTokenGuard } from 'src/common/guards/refreshToken.guard';
+import { IAuthInterface } from './interface/auth.interface';
 
 @Controller('auth')
 export class AuthController {
@@ -22,13 +23,13 @@ export class AuthController {
   }
 
   @Post('signup')
-  signUp(@Body() createUserDto: UserDto) {
+  signUp(@Body() createUserDto: UserDto): Promise<IAuthInterface> {
     this.logger.log('fff');
     return this.authService.signUp(createUserDto);
   }
 
   @Post('signin')
-  signIn(@Body() authDto: AuthDto) {
+  signIn(@Body() authDto: AuthDto): Promise<IAuthInterface> {
     return this.authService.signIn(authDto);
   }
 
@@ -40,9 +41,8 @@ export class AuthController {
     return this.authService.refreshTokens(userId, refreshToken);
   }
 
-  @UseGuards(AccessTokenGuard)
   @Get('logout')
-  logout(@Req() request: Request) {
+  logout(@Req() request: Request): void {
     this.authService.logout(request.user['sub']);
   }
 }

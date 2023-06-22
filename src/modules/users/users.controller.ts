@@ -14,10 +14,13 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AccessTokenGuard } from 'src/common/guards/accessToken.guard';
+import { DeleteResult, UpdateResult } from 'typeorm';
 import { UserDto } from './dto/users.dto';
+import { User } from './users.entity';
 import { UsersService } from './users.service';
 
 @Controller('users')
+@UseGuards(AccessTokenGuard)
 export class UsersController {
   logger: Logger;
   constructor(private readonly usersService: UsersService) {
@@ -25,18 +28,16 @@ export class UsersController {
   }
 
   @Post()
-  @UseGuards(AccessTokenGuard)
   @HttpCode(200)
-  async create(@Body() createUserDto: UserDto) {
+  async create(@Body() createUserDto: UserDto): Promise<User> {
     const user = await this.usersService.createUser(createUserDto);
     this.logger.log(user);
     return user;
   }
 
   @Get()
-  @UseGuards(AccessTokenGuard)
   @HttpCode(200)
-  async findAll() {
+  async findAll(): Promise<User[]> {
     const users = await this.usersService.findAllUsers();
     this.logger.log(users);
     if (!users) {
@@ -46,9 +47,8 @@ export class UsersController {
   }
 
   @Get(':id')
-  @UseGuards(AccessTokenGuard)
   @HttpCode(200)
-  async findById(@Param('id', ParseIntPipe) id: number) {
+  async findById(@Param('id', ParseIntPipe) id: number): Promise<User> {
     const user = await this.usersService.findUserById(id);
     this.logger.log(user);
     if (!user) {
@@ -58,9 +58,8 @@ export class UsersController {
   }
 
   @Get(':name')
-  @UseGuards(AccessTokenGuard)
   @HttpCode(200)
-  async findByUsername(@Param('name') username: string) {
+  async findByUsername(@Param('name') username: string): Promise<User> {
     const user = await this.usersService.findUserByUsername(username);
     this.logger.log(user);
     if (!user) {
@@ -70,12 +69,11 @@ export class UsersController {
   }
 
   @Patch(':id')
-  @UseGuards(AccessTokenGuard)
   @HttpCode(200)
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateUserDto: UserDto,
-  ) {
+  ): Promise<UpdateResult> {
     const user = await this.usersService.findUserById(id);
     this.logger.log(user);
     if (!user) {
@@ -85,9 +83,8 @@ export class UsersController {
   }
 
   @Delete(':id')
-  @UseGuards(AccessTokenGuard)
   @HttpCode(200)
-  async delete(@Param('id', ParseIntPipe) id: number) {
+  async delete(@Param('id', ParseIntPipe) id: number): Promise<DeleteResult> {
     const user = await this.usersService.findUserById(id);
     this.logger.log(user);
     if (!user) {
