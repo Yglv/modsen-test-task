@@ -44,4 +44,12 @@ export class User {
     type: 'character varying',
   })
   refreshToken: string;
+
+  @ApiProperty()
+  @Column({
+    name:'user_role',
+    type: 'character varying',
+    nullable: true
+  })
+  role: string
 }
