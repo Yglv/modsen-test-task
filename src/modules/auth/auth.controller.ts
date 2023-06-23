@@ -5,6 +5,7 @@ import {
   Logger,
   Post,
   Req,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import { UserDto } from '../users/dto/users.dto';
@@ -23,25 +24,44 @@ export class AuthController {
   }
 
   @Post('signup')
-  signUp(@Body() createUserDto: UserDto): Promise<IAuthInterface> {
-    this.logger.log('fff');
-    return this.authService.signUp(createUserDto);
+  async signUp(
+    @Body() createUserDto: UserDto,
+    @Req() request: Request,
+  ): Promise<IAuthInterface> {
+    const tokens = await this.authService.signUp(createUserDto);
+    request.res.cookie('refreshToken', tokens.refreshToken, {
+      httpOnly: true,
+      secure: true,
+    });
+    return tokens;
   }
 
   @Post('signin')
-  signIn(@Body() authDto: AuthDto): Promise<IAuthInterface> {
-    return this.authService.signIn(authDto);
+  async signIn(
+    @Body() authDto: AuthDto,
+    @Req() request: Request,
+  ): Promise<IAuthInterface> {
+    const tokens = await this.authService.signIn(authDto);
+    request.res.cookie('refreshToken', tokens.refreshToken, {
+      httpOnly: true,
+      secure: true,
+    });
+    return tokens;
   }
 
   @Get('refresh')
   @UseGuards(RefreshTokenGuard)
-  refreshTokens(@Req() request: Request) {
+  async refreshTokens(@Req() request: Request) {
     const userId = request.user['sub'];
     const refreshToken = request.user['refreshToken'];
-    return this.authService.refreshTokens(userId, refreshToken);
+    const tokens = await this.authService.refreshTokens(userId, refreshToken);
+    request.res.cookie('refreshToken', tokens.refreshToken, {
+      httpOnly: true,
+      secure: true,
+    });
+    return tokens;
   }
 
-  @Get('logout')
   logout(@Req() request: Request): void {
     this.authService.logout(request.user['sub']);
   }
