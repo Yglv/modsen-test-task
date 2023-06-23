@@ -22,9 +22,13 @@ import { Request } from 'express';
 import { AccessTokenGuard } from 'src/common/guards/accessToken.guard';
 import { UpdateResult } from 'typeorm';
 import { IMeetupsByPage } from './interface/meetups.interface';
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { Role } from 'src/common/enums/role.enum';
+import { RolesGuard } from 'src/common/guards/roles.guard';
 
 @ApiTags('meetups')
 @UseGuards(AccessTokenGuard)
+@UseGuards(RolesGuard)
 @Controller('meetups')
 export class MeetupsController {
   logger: Logger;
@@ -58,6 +62,7 @@ export class MeetupsController {
   }
 
   @Get()
+  @Roles(Role.Admin)
   @HttpCode(200)
   @ApiResponse({ status: 200, description: 'get all meetups', type: [Meetup] })
   @ApiResponse({ status: 400, description: 'not found' })
