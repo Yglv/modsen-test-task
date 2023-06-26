@@ -13,6 +13,7 @@ import * as argon2 from 'argon2';
 import { AuthDto } from './dto/auth.dto';
 import { IAuthInterface } from './interface/auth.interface';
 import { UpdateResult } from 'typeorm';
+import { User } from '../users/users.entity';
 
 @Injectable()
 export class AuthService {
@@ -70,6 +71,7 @@ export class AuthService {
       email: user.email,
       username: user.username,
       password: user.password,
+      //role: user.role,
     });
   }
 
@@ -116,6 +118,7 @@ export class AuthService {
       email: user.email,
       username: user.username,
       password: user.password,
+      //role: user.role,
     });
   }
 
@@ -137,5 +140,14 @@ export class AuthService {
     const tokens = await this.getTokens(userId, user.username);
     await this.updateRefreshToken(userId, tokens.refreshToken);
     return tokens;
+  }
+
+  async getUserByAccessToken(accessToken: string): Promise<User> {
+    const decoded = this.jwtService.decode(accessToken);
+    let id = 0;
+    if (typeof decoded == 'object') id = decoded.id;
+    const user = await this.usersService.findUserById(id);
+    this.logger.log(user);
+    return user;
   }
 }
