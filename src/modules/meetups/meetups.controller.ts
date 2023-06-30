@@ -27,8 +27,8 @@ import { Role } from 'src/common/enums/role.enum';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 
 @ApiTags('meetups')
-@UseGuards(AccessTokenGuard)
-@UseGuards(RolesGuard)
+//@UseGuards(AccessTokenGuard)
+//@UseGuards(RolesGuard)
 @Controller('meetups')
 export class MeetupsController {
   logger: Logger;
@@ -38,6 +38,7 @@ export class MeetupsController {
 
   @Post()
   @HttpCode(200)
+  @Roles(Role.Admin)
   @ApiResponse({ status: 200, description: 'create a meetup', type: Meetup })
   @ApiBody({
     type: [MeetupDto],
@@ -62,7 +63,6 @@ export class MeetupsController {
   }
 
   @Get()
-  @Roles(Role.Admin)
   @HttpCode(200)
   @ApiResponse({ status: 200, description: 'get all meetups', type: [Meetup] })
   @ApiResponse({ status: 400, description: 'not found' })
@@ -99,6 +99,7 @@ export class MeetupsController {
 
   @Patch(':id')
   @HttpCode(200)
+  @Roles(Role.Admin)
   @ApiResponse({ status: 200, description: 'update a meetup', type: Meetup })
   @ApiResponse({ status: 400, description: 'Not found' })
   @ApiBody({
@@ -118,6 +119,7 @@ export class MeetupsController {
 
   @Delete(':id')
   @HttpCode(200)
+  @Roles(Role.Admin)
   async remove(@Param('id', ParseIntPipe) id: number): Promise<Meetup> {
     const meetup = await this.meetupsService.findMeetupById(id);
     if (!meetup) {
