@@ -46,7 +46,7 @@ export class AuthController {
   @Post('signin')
   @ApiResponse({ status: 200, description: 'sign in a user', type: User })
   @ApiBody({
-    type: [UserDto],
+    type: [AuthDto],
   })
   async signIn(
     @Body() authDto: AuthDto,
