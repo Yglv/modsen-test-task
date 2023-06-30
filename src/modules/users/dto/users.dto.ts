@@ -1,26 +1,29 @@
 /* eslint-disable prettier/prettier */
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
+import { Role } from 'src/common/enums/role.enum';
 
 export class UserDto {
-  /*@ApiProperty()
+  @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  @IsEmail()*/
+  @IsEmail()
   email: string;
 
-  /*@ApiProperty()
-  @IsString()
-  @IsNotEmpty()*/
-  username: string;
-
-  /*@ApiProperty()
+  @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  @MinLength(8)*/
+  username: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  @MinLength(8)
   password: string;
 
-  /*@ApiProperty()
-  @IsString()*/
+  @ApiProperty()
   refreshToken?: string;
+
+  @ApiProperty()
+  role?: Role;
 }
