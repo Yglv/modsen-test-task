@@ -2,7 +2,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Factory } from 'nestjs-seeder';
 import { Role } from 'src/common/enums/role.enum';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Meetup } from '../meetups/meetups.entity';
 
 @Entity()
 export class User {
@@ -54,4 +55,8 @@ export class User {
     default: 'user'
   })
   role: Role
+
+  @ApiProperty()
+  @ManyToMany(() => Meetup)
+  meetups: Meetup[]
 }
