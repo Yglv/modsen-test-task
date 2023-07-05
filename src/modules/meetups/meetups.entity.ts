@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { ApiProperty } from '@nestjs/swagger';
 import { Factory } from 'nestjs-seeder';
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from '../users/users.entity';
 
 @Entity()
@@ -64,7 +64,7 @@ export class Meetup {
   admin: User
 
   @ApiProperty()
-  @OneToMany(() =>[User])
-  @JoinColumn()
-  users: [User]
+  @ManyToMany(() => User)
+  @JoinTable()
+  users: User[]
 }
